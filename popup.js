@@ -1,13 +1,6 @@
 var conversation = [];
 var conversationDiv = document.getElementById("conversationDiv");
 var QAdiv = document.getElementById("QAdiv");
-// document.getElementById('simplify-btn').addEventListener('click', async () => {
-//     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-//     chrome.scripting.executeScript({
-//       target: { tabId: tab.id },
-//       function: simplifySelectedText
-//     });
-//   });
 
 document.getElementById("simplify-btn").addEventListener("click", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -68,43 +61,13 @@ function sendSelectedText() {
   chrome.runtime.sendMessage({ action: "simplifyText", text: selectedText });
 }
 
-// function simplifySelectedText() {
-//   console.log("Simplify Text button clicked");
-//   const selectedText = window.getSelection().toString();
-//   conversation.push("Simplify this text: " + selectedText);
-//   //createMessageDiv("Simplify this text: " + selectedText,"user");
-//   chrome.runtime.sendMessage({ action: 'simplifyText', text: selectedText }, (response) => {
-//     if (response && response.simplifiedText) {
-//       console.log(response.simplifiedText);
-//       document.getElementById('body').classList.add('expanded-body');
-//       document.getElementById('header').style.display = 'none';
-//       conversationDiv.style.display = 'block';
-//       if(!conversationDiv.style.height){
-//         setTimeout(() => {
-//             conversationDiv.style.height='400px';
-//         }, 10);
-//     }
-//       conversation.push(response.simplifiedText);
-//       let div = createMessageDiv(response.simplifiedText,"assistant");
-//       conversationDiv.appendChild(div);
-//       setTimeout(() => {
-//         div.style.opacity = '1';
-//     }, 10);
-//     appendLetterByLetter(div.getElementsByClassName("messageDiv").item(0),response.simplifiedText,index);
-//     conversationDiv.scrollTop = conversationDiv.scrollHeight;
-//     } else {
-//       alert("Error: Could not simplify the text.");
-//     }
-//   });
-// }
-
 function askQuestion(formattedConversation) {
   chrome.runtime.sendMessage(
     { action: "askQuestion", text: formattedConversation },
     (response) => {
       if (response && response.answer) {
         conversation.push(response.answer);
-        let div = createMessageDiv(response.answer, "assistant");
+        let div = createMessageDiv("", "assistant");
         conversationDiv.appendChild(div);
         setTimeout(() => {
           div.style.opacity = "1";
@@ -112,7 +75,7 @@ function askQuestion(formattedConversation) {
         appendLetterByLetter(
           div.getElementsByClassName("messageDiv").item(0),
           response.answer,
-          index
+          0
         );
       }
     }
@@ -134,6 +97,7 @@ function writeAndSubmit() {
   const newMessage = document.getElementById("question").value;
   const conversationDiv = document.getElementById("conversationDiv");
   conversation.push(newMessage);
+  
 
   // show loading animation
   conversationDiv.style.display = "block";

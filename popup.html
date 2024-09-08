@@ -5,17 +5,17 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="./ai-chat.css">
   <style>
-    body { width: 450px; padding: 10px;}
+    body { width: 600px; padding: 10px;}
     button { width: 100%; padding: 10px; margin-top: 10px; }
   </style>
 </head>
 <body id="body">
   <div id="header">
-    <h1>Text Simplifier</h1>
-    <button id="simplify-btn">Simplify Selected Text</button>
+    <h1 class="text-center font-weight-bold">Hi, I'm your AI assistant.</h1>
+    <button id="simplify-btn" class="btn btn-primary">Let's summarize your selected text</button>
   </div>
-  <div id="QAdiv" class="border border-success">
-    <div id="QAdiv-header" class="bg-success">
+  <div id="QAdiv" class="border border-primary">
+    <div id="QAdiv-header" class="bg-primary">
         Chat with AI:
     </div>
     <img id="loadingGif" src="images/chatbot-thinking-bg-removed.gif" alt="Loading..." width="120px" height="120px"/>
@@ -26,7 +26,7 @@
             <textarea class="form-control" id="question" rows="3" placeholder="Enter your question:"></textarea>
         </div>
         <div class="col-3">
-            <button class="btn btn-success" type="button" id="submitQuestionButton" onclick="writeAndSubmit()">Send</button>
+            <button class="btn btn-primary" type="button" id="submitQuestionButton" onclick="writeAndSubmit()">Send</button>
         </div>
     </div>
 </div>
