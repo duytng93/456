@@ -1,6 +1,12 @@
 var conversation = [];
 var conversationDiv = document.getElementById("conversationDiv");
 var QAdiv = document.getElementById("QAdiv");
+var language = "en"; // defualt, or es or vi
+var languageSelect = document.getElementById("language-select");
+var heading = document.getElementById("heading");
+var simplifyBtn = document.getElementById("simplify-btn");
+var selectLanguagePan = document.getElementById("select-language-pan");
+var QAdivHeader = document.getElementById("QAdiv-header");
 
 document.getElementById("simplify-btn").addEventListener("click", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -12,12 +18,12 @@ document.getElementById("simplify-btn").addEventListener("click", async () => {
     () => {
       chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.action === "simplifyText") {
-          conversation.push("Simplify this text: " + message.text);
+          //conversation.push("Simplify this text: " + message.text);
           chrome.runtime.sendMessage(
             { action: "simplifyText", text: message.text },
             (response) => {
               if (response && response.simplifiedText) {
-                
+                conversation.push(response.firstUserMessage + message.text);
                 document.getElementById("body").classList.add("expanded-body");
                 document.getElementById("header").style.display = "none";
                 QAdiv.style.display='block';
@@ -61,6 +67,39 @@ function sendSelectedText() {
   chrome.runtime.sendMessage({ action: "simplifyText", text: selectedText });
 }
 
+function getSelectedLanguageUpdateText() {
+  console.log("getSelectedLanguageUpdateText")
+  chrome.runtime.sendMessage({ action: "getLanguage" }, (response) => {
+    if (response && response.language) {
+      language = response.language;
+      languageSelect.value = language;
+      updateText();
+    }
+    
+  });
+}
+
+function updateText() {
+  if (language === "es") {
+    heading.textContent = "Hola, soy tu asistente de IA";
+    simplifyBtn.textContent = "Resumamos tu texto seleccionado";
+    selectLanguagePan.textContent = "Selecciona tu idioma: ";
+    QAdivHeader.textContent = "Chatea con IA:";
+  }else if (language === "vi") {
+    heading.textContent = "Xin chào, tôi là trợ lý AI của bạn";
+    simplifyBtn.textContent = "Tóm tắt văn bản bạn đã chọn";
+    selectLanguagePan.textContent = "Chọn ngôn ngữ của bạn: ";
+    QAdivHeader.textContent = "Trò chuyện với AI:";
+  }else{
+    heading.textContent = "Hello, I'm your AI assistant";
+    simplifyBtn.textContent = "Let's summarize your selected text";
+    selectLanguagePan.textContent = "Select your language: ";
+    QAdivHeader.textContent = "Chat with AI:";
+  }
+}
+
+getSelectedLanguageUpdateText();
+
 function askQuestion(formattedConversation) {
   chrome.runtime.sendMessage(
     { action: "askQuestion", text: formattedConversation },
@@ -81,6 +120,12 @@ function askQuestion(formattedConversation) {
     }
   );
 }
+
+languageSelect.addEventListener("change", function () {
+  language = languageSelect.value;
+  updateText();
+  chrome.runtime.sendMessage({ action: "changeLanguage", language: language });
+})
 
 document
   .getElementById("question")
