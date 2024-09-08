@@ -1,3 +1,5 @@
+import { apiKey } from "./apiKey.js";
+
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "simplifyText",
@@ -17,10 +19,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true;  // Required when using sendResponse asynchronously
 });
 
-
 async function getSimplifiedText(text) {
   
-  const apiKey = mainfest.env_variables.OPENAI_API_KEY;
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -48,3 +48,5 @@ async function getSimplifiedText(text) {
     throw new Error("Failed to simplify text");
   }
 }
+
+
